@@ -1,17 +1,19 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ProductsModule } from './products/products.module';
+import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import process from 'process';
+import { ProductsModule } from './products/products.module';
 
 @Module({
-  imports: [ MongooseModule.forRoot(process.env.MONGO_URL) , ProductsModule ],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [ 
+        ConfigModule.forRoot({}),
+        MongooseModule.forRoot(process.env.MONGO_URL),
+        ProductsModule
+    ],
+    controllers: [AppController],
+    providers: [AppService],
 })
 export class AppModule {
-    constructor() {
-        console.log("MONGO URL", process.env.MONGO_URL);
-    }
+
 }

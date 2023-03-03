@@ -1,25 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { ApiResponse } from 'src/interfaces/response.interface';
 import { CreateProductDto } from './dto/create-product.dto';
+import { OutputProductDto } from './dto/output-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { ProductDocument } from './models/product.mongo.model';
 
 @Injectable()
 export class ProductsService {
+    constructor(@InjectModel('products') private productModel :Model<ProductDocument> ) {}
     async create(createProductDto: CreateProductDto) :Promise<ApiResponse> {
         try {
-            //ADD PRODUCT TO DB
-            //PASS IN THE DTO
-            //RETURN THE PRODUCT
+            let newObject = await this.productModel.create(createProductDto);
             return {
                 success: true,
                 message: 'Product created successfully',
-                data: createProductDto
+                data: newObject
             };
         } catch (error) {
+            console.log(error);
             return {
                 success: false,
                 message: 'Failed to create product',
-                data: createProductDto
+                error: JSON.stringify(error),
+                data: {}
             };
         }
     }
@@ -27,18 +32,24 @@ export class ProductsService {
     async findAll() :Promise<ApiResponse> {
         try {
             //GET ALL PRODUCTS FROM DB
+            //let products = await ProductMongoModel.find();
+            //PARSE THE PRODUCTS TO DTO
+            /*let productsDto = products.map(product => {
+                return new OutputProductDto(product);
+            });*/
             //RETURN THE PRODUCTS
             return {
                 success: true,
                 message: 'Products retrieved successfully',
-                data: {}
+                data: []//productsDto
             };
         }
         catch (error) {
             return {
                 success: false,
                 message: 'Failed to retrieve products',
-                data: {}
+                error: error,
+                data: []
             };
         }
     }
@@ -57,6 +68,7 @@ export class ProductsService {
             return {
                 success: false,
                 message: 'Failed to retrieve product',
+                error: error,
                 data: {}
             };
         }
@@ -77,6 +89,7 @@ export class ProductsService {
             return {
                 success: false,
                 message: 'Failed to update product',
+                error: error,
                 data: updateProductDto
             };
         }
@@ -96,6 +109,7 @@ export class ProductsService {
             return {
                 success: false,
                 message: 'Failed to delete product',
+                error: error,
                 data: {}
             };
         }
