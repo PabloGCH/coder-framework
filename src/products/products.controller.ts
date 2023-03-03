@@ -15,21 +15,21 @@ export class ProductsController {
 
   @Get()
   async findAll() {
-    return this.productsService.findAll();
+    return await this.productsService.findAll();
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.productsService.findOne(+id);
+  async findOne(@Param() params :any) {
+    return await this.productsService.findOne(params.id);
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productsService.update(+id, updateProductDto);
+  async update(@Param() params :any, @Body() updateProductDto: UpdateProductDto) {
+    return await this.productsService.update(params.id, updateProductDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.productsService.remove(+id);
+  async remove(@Param() params :any) {
+    return await this.productsService.remove(params.id);
   }
 }
